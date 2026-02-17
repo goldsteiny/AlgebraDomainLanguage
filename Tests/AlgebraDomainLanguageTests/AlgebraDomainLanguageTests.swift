@@ -1,6 +1,1 @@
-import Testing
-@testable import AlgebraDomainLanguage
-
-@Test func example() async throws {
-    // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-}
+// Intentionally empty: full test suite lives in AlgebraTests.swift
