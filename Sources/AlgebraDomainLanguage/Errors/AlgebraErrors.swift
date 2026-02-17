@@ -1,10 +1,3 @@
-//
-//  AlgebraErrors.swift
-//  UncertainValueCoreAlgebra
-//
-//  Typed failures for partial algebraic operations.
-//
-
 public struct ReciprocalUnavailableError: Error, Equatable, Sendable {
     public let context: String?
 
@@ -29,7 +22,7 @@ public struct EmptyCollectionError: Error, Equatable, Sendable {
     }
 }
 
-/// Optional umbrella when callers prefer a single algebra error domain.
+/// Unified error domain for callers that prefer a single catch site over individual error types.
 public enum AlgebraError: Error, Equatable, Sendable {
     case reciprocalUnavailable(ReciprocalUnavailableError)
     case divisionByNonUnit(DivisionByNonUnitError)

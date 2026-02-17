@@ -1,21 +1,14 @@
-//
-//  InvertibleWitness.swift
-//  UncertainValueCoreAlgebra
-//
-//  Witnesses for multiplicative invertibility (units).
-//
-
-/// A witness that a concrete element is multiplicatively invertible.
+/// Proof that a specific element is multiplicatively invertible (a "unit" in algebra).
 public protocol MultiplicativeInvertible: Sendable {
     associatedtype Element: MultiplicativeSemigroup
     var value: Element { get }
     var reciprocal: Element { get }
 }
 
-/// Backward-compatible spelling alias.
+/// Corrects earlier typo in the protocol name.
 public typealias MultiplicativeInvertiable = MultiplicativeInvertible
 
-/// Canonical witness type for units (invertible elements).
+/// Concrete witness carrying an element and its precomputed reciprocal.
 public struct Unit<Element: MultiplicativeSemigroup>: MultiplicativeInvertible, Sendable {
     public let value: Element
     public let reciprocal: Element
@@ -28,7 +21,6 @@ public struct Unit<Element: MultiplicativeSemigroup>: MultiplicativeInvertible, 
 }
 
 public extension Unit where Element: MultiplicativeMonoidWithUnits {
-    /// Returns nil when the element is not a unit.
     @inlinable
     init?(_ value: Element) {
         guard let unit = value.unit else { return nil }

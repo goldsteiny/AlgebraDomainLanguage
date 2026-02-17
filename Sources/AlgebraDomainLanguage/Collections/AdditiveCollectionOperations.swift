@@ -1,10 +1,3 @@
-//
-//  AdditiveCollectionOperations.swift
-//  UncertainValueCoreAlgebra
-//
-//  Collection conveniences for additive structures.
-//
-
 public extension Array where Element: AdditiveMonoid {
     @inlinable
     func sum() -> Element {

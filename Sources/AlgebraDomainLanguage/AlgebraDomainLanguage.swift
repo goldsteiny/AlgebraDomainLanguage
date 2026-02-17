@@ -1,2 +1,1 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+// Intentionally empty. Public API is distributed across the module's source files.

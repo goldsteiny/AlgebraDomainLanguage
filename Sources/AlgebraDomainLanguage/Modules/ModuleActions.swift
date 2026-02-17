@@ -1,17 +1,10 @@
-//
-//  ModuleActions.swift
-//  UncertainValueCoreAlgebra
-//
-//  Module actions and linear combination utilities.
-//
-
-/// Left scalar action over an additive group.
+/// Left scalar action: `scalar * element`.
 public protocol LeftModule: AdditiveGroup {
     associatedtype Scalar: Sendable
     func leftScaled(by scalar: Scalar) -> Self
 }
 
-/// Right scalar action over an additive group.
+/// Right scalar action: `element * scalar`.
 public protocol RightModule: AdditiveGroup {
     associatedtype Scalar: Sendable
     func rightScaled(by scalar: Scalar) -> Self
@@ -19,7 +12,7 @@ public protocol RightModule: AdditiveGroup {
 
 public protocol Bimodule: LeftModule, RightModule {}
 
-/// Legacy ergonomic alias.
+/// Alias for `LeftModule` when sidedness is irrelevant.
 public typealias Scalable = LeftModule
 
 public extension LeftModule {

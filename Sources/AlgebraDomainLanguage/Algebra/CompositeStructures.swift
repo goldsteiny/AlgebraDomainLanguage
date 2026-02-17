@@ -1,17 +1,10 @@
-//
-//  CompositeStructures.swift
-//  UncertainValueCoreAlgebra
-//
-//  Composite algebraic structures.
-//
-
 public protocol Semiring: AdditiveMonoid, MultiplicativeMonoid {}
 public protocol CommutativeSemiring: Semiring, MultiplicativeCommutativeMonoid {}
 
 public protocol Ring: Semiring, AdditiveAbelianGroup {}
 public protocol CommutativeRing: Ring, CommutativeSemiring {}
 
-/// Also called a skew field in non-commutative settings.
+/// Also known as a skew field when multiplication is non-commutative.
 public protocol DivisionRing: Ring, MultiplicativeMonoidWithUnits {}
 public protocol Field: DivisionRing, CommutativeRing, MultiplicativeCommutativeMonoidWithUnits {}
 

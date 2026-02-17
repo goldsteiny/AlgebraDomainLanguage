@@ -1,11 +1,4 @@
-//
-//  Identities.swift
-//  UncertainValueCoreAlgebra
-//
-//  Identity protocols.
-//
-
-/// Additive identity.
+/// Additive identity element (0).
 public protocol Zero: Sendable {
     static var zero: Self { get }
     var isZero: Bool { get }
@@ -16,7 +9,7 @@ public extension Zero where Self: Equatable {
     var isZero: Bool { self == .zero }
 }
 
-/// Multiplicative identity.
+/// Multiplicative identity element (1).
 public protocol One: Sendable {
     static var one: Self { get }
     var isOne: Bool { get }

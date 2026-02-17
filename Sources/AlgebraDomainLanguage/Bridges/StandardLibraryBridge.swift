@@ -1,12 +1,4 @@
-//
-//  StandardLibraryBridge.swift
-//  UncertainValueCoreAlgebra
-//
-//  Bridges from Swift standard floating-point types
-//  into the algebra protocol tower.
-//
-
-/// Bridge binary floating-point scalars to the core algebra hierarchy.
+/// Conformance bundle that lifts `BinaryFloatingPoint` types into the full algebra hierarchy.
 public protocol FloatingPointFieldAlgebra:
     BinaryFloatingPoint,
     AdditiveAbelianGroup,
@@ -41,4 +33,3 @@ public extension FloatingPointFieldAlgebra {
 
 extension Float: FloatingPointFieldAlgebra {}
 extension Double: FloatingPointFieldAlgebra {}
-

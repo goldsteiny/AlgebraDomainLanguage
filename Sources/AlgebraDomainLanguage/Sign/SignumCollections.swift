@@ -1,13 +1,5 @@
-//
-//  SignumCollections.swift
-//  UncertainValueCoreAlgebra
-//
-//  Signum aggregation helpers.
-//
-
 public extension Array where Element == Signum {
-    /// Multiplicative sign product over the array.
-    /// Empty array returns `.positive`.
+    /// Empty array returns `.positive` (multiplicative identity for sign).
     @inlinable
     func product() -> Signum {
         reduce(.positive) { partial, next in

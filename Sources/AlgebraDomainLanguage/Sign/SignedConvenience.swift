@@ -1,10 +1,3 @@
-//
-//  SignedConvenience.swift
-//  UncertainValueCoreAlgebra
-//
-//  Convenience sign checks.
-//
-
 public extension Signed {
     @inlinable
     var isPositive: Bool {

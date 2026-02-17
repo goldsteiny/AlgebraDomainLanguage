@@ -1,10 +1,4 @@
-//
-//  NonEmpty.swift
-//  UncertainValueCoreAlgebra
-//
-//  Type-safe wrapper for non-empty collections.
-//
-
+/// A collection guaranteed to contain at least one element. Enables total fold operations (sum, product).
 public struct NonEmpty<Element: Sendable>: Sendable {
     public let head: Element
     public let tail: [Element]
@@ -41,7 +35,6 @@ public struct NonEmpty<Element: Sendable>: Sendable {
     }
 }
 
-/// Backward-compatible alias.
 public typealias NonEmptyArray<Element: Sendable> = NonEmpty<Element>
 
 extension NonEmpty: RandomAccessCollection {

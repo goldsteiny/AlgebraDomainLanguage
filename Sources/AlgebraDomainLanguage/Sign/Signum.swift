@@ -1,10 +1,3 @@
-//
-//  Signum.swift
-//  UncertainValueCoreAlgebra
-//
-//  Sign and absolute-value decomposition primitives.
-//
-
 public enum Signum: Int, Sendable, Codable, CaseIterable {
     case negative = -1
     case zero = 0
@@ -22,7 +15,7 @@ public extension Signum {
     }
 }
 
-/// Signed element primitive.
+/// An element that carries a sign and can be negated.
 public protocol Signed: Sendable {
     var signum: Signum { get }
     var flippedSign: Self { get }
@@ -35,7 +28,7 @@ public extension Signed {
     }
 }
 
-/// x decomposed into sign and absolute value.
+/// An element decomposable into sign and magnitude.
 public protocol AbsoluteValueDecomposable: Signed {
     var absolute: Self { get }
 }

@@ -1,11 +1,4 @@
-//
-//  MultiplicativeStructures.swift
-//  UncertainValueCoreAlgebra
-//
-//  Canonical multiplicative algebra hierarchy.
-//
-
-// MARK: - Binary and n-ary multiplicative primitives
+// MARK: - Primitives
 
 public protocol MultiplicativeSemigroup: Sendable {
     static func * (lhs: Self, rhs: Self) -> Self
@@ -34,14 +27,14 @@ public extension MultiplicativelyProductable {
     }
 }
 
-// MARK: - Canonical multiplicative tower
+// MARK: - Algebraic tower
 
-/// Explicitly states that multiplicative semigroup and n-ary product coexist.
+/// Pairs binary `*` with n-ary `product` so conforming types provide both.
 public protocol MultiplicativeSemigroupProductable: MultiplicativeSemigroup, MultiplicativelyProductable {}
 
 public protocol MultiplicativeMonoid: MultiplicativeSemigroupProductable, One {}
 
-/// Total reciprocal (for types that exclude zero from the carrier set).
+/// Every element has a reciprocal. Only valid for types whose carrier set excludes zero.
 public protocol MultiplicativeGroup: MultiplicativeMonoid {
     var reciprocal: Self { get }
 }
@@ -53,7 +46,7 @@ public extension MultiplicativeGroup {
     }
 }
 
-/// A multiplicative monoid that can identify its units (invertible elements).
+/// A monoid where some elements may be invertible (units). Reciprocal and division are partial.
 public protocol MultiplicativeMonoidWithUnits: MultiplicativeMonoid {
     var unit: Unit<Self>? { get }
 }
@@ -77,14 +70,14 @@ public extension MultiplicativeMonoidWithUnits {
     }
 }
 
-// MARK: - Commutative markers
+// MARK: - Commutativity markers
 
 public protocol MultiplicativeCommutativeSemigroup: MultiplicativeSemigroup {}
 public protocol MultiplicativeCommutativeMonoid: MultiplicativeMonoid, MultiplicativeCommutativeSemigroup {}
 public protocol MultiplicativeCommutativeGroup: MultiplicativeGroup, MultiplicativeCommutativeMonoid {}
 public protocol MultiplicativeCommutativeMonoidWithUnits: MultiplicativeMonoidWithUnits, MultiplicativeCommutativeMonoid {}
 
-// MARK: - Pairing protocols for n-ary specialization
+// MARK: - Pairing protocols
 
 public protocol MultiplicativeMonoidProductable: MultiplicativeMonoid, MultiplicativelyProductable {}
 public protocol MultiplicativeGroupProductable: MultiplicativeGroup, MultiplicativelyProductable {}

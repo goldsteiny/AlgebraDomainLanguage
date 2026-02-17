@@ -1,11 +1,4 @@
-//
-//  AdditiveStructures.swift
-//  UncertainValueCoreAlgebra
-//
-//  Canonical additive algebra hierarchy.
-//
-
-// MARK: - Binary and n-ary additive primitives
+// MARK: - Primitives
 
 public protocol AdditiveSemigroup: Sendable {
     static func + (lhs: Self, rhs: Self) -> Self
@@ -44,9 +37,9 @@ public extension AdditivelySummable {
     }
 }
 
-// MARK: - Canonical additive tower
+// MARK: - Algebraic tower
 
-/// Explicitly states that additive semigroup and n-ary summation coexist.
+/// Pairs binary `+` with n-ary `sum` so conforming types provide both.
 public protocol AdditiveSemigroupSummable: AdditiveSemigroup, AdditivelySummable {}
 
 public protocol AdditiveMonoid: AdditiveSemigroupSummable, Zero {}
@@ -71,10 +64,10 @@ public extension AdditiveGroup {
     }
 }
 
-/// Commutative additive group.
+/// Additive group with commutativity (a + b = b + a).
 public protocol AdditiveAbelianGroup: AdditiveGroup {}
 
-// MARK: - Pairing protocols for n-ary specialization
+// MARK: - Pairing protocols
 
 public protocol AdditiveMonoidSummable: AdditiveMonoid, AdditivelySummable {}
 public protocol AdditiveGroupSummable: AdditiveGroup, AdditivelySummable {}

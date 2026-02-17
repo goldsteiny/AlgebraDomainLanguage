@@ -1,10 +1,4 @@
-//
-//  NonZero.swift
-//  UncertainValueCoreAlgebra
-//
-//  Type-safe wrapper guaranteeing a non-zero value.
-//
-
+/// Type-level guarantee that a value is non-zero. Useful where zero is mathematically invalid.
 public struct NonZero<Value: Zero & Sendable>: Sendable {
     public let value: Value
 

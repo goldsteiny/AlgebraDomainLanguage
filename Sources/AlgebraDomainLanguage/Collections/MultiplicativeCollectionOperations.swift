@@ -1,10 +1,3 @@
-//
-//  MultiplicativeCollectionOperations.swift
-//  UncertainValueCoreAlgebra
-//
-//  Collection conveniences for multiplicative structures.
-//
-
 public extension Array where Element: MultiplicativeMonoid {
     @inlinable
     func product() -> Element {
