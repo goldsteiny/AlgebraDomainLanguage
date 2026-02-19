@@ -1,27 +1,36 @@
+// MARK: - Internal iterator helper
+
+extension Sequence {
+    /// Splits off the first element and wraps the remainder in an `IteratorSequence`.
+    /// `@usableFromInline` so that `@inlinable` callers can use it without breaking inlinability.
+    @usableFromInline
+    func _splitFirst() -> (head: Element, tail: IteratorSequence<Iterator>)? {
+        var iter = makeIterator()
+        guard let head = iter.next() else { return nil }
+        return (head, IteratorSequence(iter))
+    }
+}
+
 // MARK: - Sequence.sumResult
 //
 // Two constraint tiers. Bodies are identical; dispatch differs:
 //   AdditiveSemigroup         → sum(first:rest:) resolved as default extension (fold via +)
 //   AdditiveSemigroupSummable → sum(first:rest:) resolved through AdditivelySummable formal
 //                               requirement (custom witness). Swift prefers the more specific tier.
-//
-// Both use an iterator so no intermediate array is ever built.
 
 public extension Sequence where Element: AdditiveSemigroup {
     @inlinable
     var sumResult: Result<Element, EmptyCollectionError> {
-        var iter = makeIterator()
-        guard let first = iter.next() else { return .failure(EmptyCollectionError()) }
-        return .success(Element.sum(first: first, rest: IteratorSequence(iter)))
+        guard let (first, rest) = _splitFirst() else { return .failure(EmptyCollectionError()) }
+        return .success(Element.sum(first: first, rest: rest))
     }
 }
 
 public extension Sequence where Element: AdditiveSemigroupSummable {
     @inlinable
     var sumResult: Result<Element, EmptyCollectionError> {
-        var iter = makeIterator()
-        guard let first = iter.next() else { return .failure(EmptyCollectionError()) }
-        return .success(Element.sum(first: first, rest: IteratorSequence(iter)))
+        guard let (first, rest) = _splitFirst() else { return .failure(EmptyCollectionError()) }
+        return .success(Element.sum(first: first, rest: rest))
     }
 }
 
@@ -33,9 +42,8 @@ public extension Sequence where Element: AdditiveSemigroupSummable {
 public extension Sequence where Element: AdditiveMonoid {
     @inlinable
     var sum: Element {
-        var iter = makeIterator()
-        guard let first = iter.next() else { return .zero }
-        return Element.sum(first: first, rest: IteratorSequence(iter))
+        guard let (first, rest) = _splitFirst() else { return .zero }
+        return Element.sum(first: first, rest: rest)
     }
 }
 
@@ -80,22 +88,16 @@ public extension NonEmpty {
 public extension Sequence {
     @inlinable
     func mapAndSumResult<T: AdditiveSemigroup>(_ transform: (Element) -> T) -> Result<T, EmptyCollectionError> {
-        var iter = makeIterator()
-        guard let first = iter.next() else { return .failure(EmptyCollectionError()) }
-        return .success(T.sum(first: transform(first), rest: IteratorSequence(iter).lazy.map(transform)))
+        lazy.map(transform).sumResult
     }
 
     @inlinable
     func mapAndSumResult<T: AdditiveSemigroupSummable>(_ transform: (Element) -> T) -> Result<T, EmptyCollectionError> {
-        var iter = makeIterator()
-        guard let first = iter.next() else { return .failure(EmptyCollectionError()) }
-        return .success(T.sum(first: transform(first), rest: IteratorSequence(iter).lazy.map(transform)))
+        lazy.map(transform).sumResult
     }
 
     @inlinable
     func mapAndSum<T: AdditiveMonoid>(_ transform: (Element) -> T) -> T {
-        var iter = makeIterator()
-        guard let first = iter.next() else { return .zero }
-        return T.sum(first: transform(first), rest: IteratorSequence(iter).lazy.map(transform))
+        lazy.map(transform).sum
     }
 }
