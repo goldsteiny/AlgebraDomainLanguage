@@ -309,13 +309,13 @@ struct AdditiveDerivationTests {
     }
 
     @Test func arraySumForMonoid() {
-        #expect([DoublePair(1, 1), DoublePair(2, 3)].sum() == DoublePair(3, 4))
-        #expect(([DoublePair]() as [DoublePair]).sum() == .zero)
+        #expect([DoublePair(1, 1), DoublePair(2, 3)].sum == DoublePair(3, 4))
+        #expect(([DoublePair]() as [DoublePair]).sum == .zero)
     }
 
     @Test func semigroupArraySumResult() {
-        #expect([DoublePair(1, 2), DoublePair(3, 4)].sumResult() == .success(DoublePair(4, 6)))
-        #expect(([] as [DoublePair]).sumResult() == .failure(.init()))
+        #expect([DoublePair(1, 2), DoublePair(3, 4)].sumResult == .success(DoublePair(4, 6)))
+        #expect(([] as [DoublePair]).sumResult == .failure(.init()))
     }
 
     @Test func directSumAlias() {
@@ -466,7 +466,7 @@ struct AdditiveLawTests {
         #expect(vararg == DoublePair(9, 12))
 
         let nonEmpty = NonEmpty(DoublePair(1, 1), [DoublePair(2, 3), DoublePair(4, 5)])
-        #expect(nonEmpty.sum() == DoublePair(7, 9))
+        #expect(nonEmpty.sum == DoublePair(7, 9))
     }
 }
 
@@ -492,7 +492,7 @@ struct MultiplicativeLawTests {
 struct CollectionDispatchTests {
     @Test func additiveMonoidArraySumUsesElementSumWitness() {
         let values = [BiasedSum(1), BiasedSum(2), BiasedSum(3)]
-        #expect(values.sum() == BiasedSum(1_006))
+        #expect(values.sum == BiasedSum(1_006))
     }
 
     @Test func multiplicativeMonoidArrayProductUsesElementProductWitness() {
