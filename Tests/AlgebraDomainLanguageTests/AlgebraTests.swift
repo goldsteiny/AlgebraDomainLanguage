@@ -118,8 +118,8 @@ extension SumPrimitive: Zero {
 }
 
 extension SumPrimitive: AdditivelySummable {
-    static func sum(_ values: NonEmpty<SumPrimitive>) -> SumPrimitive {
-        SumPrimitive(values.tail.reduce(values.head.raw) { $0 + $1.raw })
+    static func sum<S: Sequence>(first: SumPrimitive, rest: S) -> SumPrimitive where S.Element == SumPrimitive {
+        SumPrimitive(rest.reduce(first.raw) { $0 + $1.raw })
     }
 }
 
@@ -218,8 +218,8 @@ extension BiasedSum: AdditiveSemigroup {
 }
 
 extension BiasedSum: AdditivelySummable {
-    static func sum(_ values: NonEmpty<BiasedSum>) -> BiasedSum {
-        BiasedSum(values.tail.reduce(values.head.raw) { $0 + $1.raw } + 1_000)
+    static func sum<S: Sequence>(first: BiasedSum, rest: S) -> BiasedSum where S.Element == BiasedSum {
+        BiasedSum(rest.reduce(first.raw) { $0 + $1.raw } + 1_000)
     }
 }
 
@@ -316,10 +316,6 @@ struct AdditiveDerivationTests {
     @Test func semigroupArraySumResult() {
         #expect([DoublePair(1, 2), DoublePair(3, 4)].sumResult == .success(DoublePair(4, 6)))
         #expect(([] as [DoublePair]).sumResult == .failure(.init()))
-    }
-
-    @Test func directSumAlias() {
-        #expect(DoublePair.directSum(DoublePair(2, 3), DoublePair(4, 5)) == DoublePair(6, 8))
     }
 }
 
@@ -609,5 +605,54 @@ struct CompositeProtocolFixtureTests {
 
         let asDivisionRing = requireDivisionRing(4.0)
         #expect(asDivisionRing + 1.0 == 5.0)
+    }
+}
+
+struct MapAndSumTests {
+    // MARK: NonEmpty.mapAndSum
+
+    @Test func nonEmptyMapAndSumIsTotal() {
+        let values = NonEmpty(DoublePair(1, 2), [DoublePair(3, 4), DoublePair(5, 6)])
+        #expect(values.mapAndSum { DoublePair($0.first * 2, $0.second * 2) } == DoublePair(18, 24))
+    }
+
+    @Test func nonEmptyMapAndSumSummableVariantDispatchesThroughWitness() {
+        // `T: AdditiveSemigroupSummable` overload: calls `T.sum` directly through the
+        // `AdditivelySummable` formal requirement — BiasedSum's +1000 bias is applied.
+        // Swift prefers this overload over the AdditiveSemigroup one for AdditiveSemigroupSummable types.
+        let values = NonEmpty(BiasedSum(1), [BiasedSum(2)])
+        #expect(values.mapAndSum { $0 } == BiasedSum(1_003))
+    }
+
+    // MARK: Sequence.mapAndSumResult
+
+    @Test func sequenceMapAndSumResultSuccessAndEmpty() {
+        let values = [DoublePair(1, 2), DoublePair(3, 4)]
+        // transform swaps components: (1,2)→(2,1), (3,4)→(4,3); sum = (6,4)
+        #expect(values.mapAndSumResult { DoublePair($0.second, $0.first) } == .success(DoublePair(6, 4)))
+        #expect(([] as [DoublePair]).mapAndSumResult { $0 } == .failure(.init()))
+    }
+
+    @Test func sequenceMapAndSumResultDispatchesThroughSumWitness() {
+        // Swift prefers the `T: AdditiveSemigroupSummable` overload for BiasedSum, so
+        // `T.sum` is called directly — BiasedSum's +1000 bias is applied.
+        let values = [BiasedSum(1), BiasedSum(2)]
+        #expect(values.mapAndSumResult { $0 } == .success(BiasedSum(1_003)))
+        #expect(([] as [BiasedSum]).mapAndSumResult { $0 } == .failure(.init()))
+    }
+
+    // MARK: Sequence.mapAndSum
+
+    @Test func sequenceMapAndSumAndZeroForEmpty() {
+        let values = [SumPrimitive(3), SumPrimitive(7)]
+        #expect(values.mapAndSum { SumPrimitive($0.raw * 2) } == SumPrimitive(20))
+        #expect(([] as [SumPrimitive]).mapAndSum { $0 } == SumPrimitive(0))
+    }
+
+    @Test func sequenceMapAndSumDispatchesThroughSumWitness() {
+        // Mirrors CollectionDispatchTests but via mapAndSum. Identity transform should still
+        // route through BiasedSum.sum and accumulate the 1_000 bias once.
+        let values = [BiasedSum(1), BiasedSum(2), BiasedSum(3)]
+        #expect(values.mapAndSum { $0 } == BiasedSum(1_006))
     }
 }
