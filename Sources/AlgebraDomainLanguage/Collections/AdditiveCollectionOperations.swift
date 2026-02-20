@@ -101,3 +101,46 @@ public extension Sequence {
         lazy.map(transform).sum
     }
 }
+
+// MARK: - NonEmpty.compactMapAndSumResult / compactMapAndSum
+//
+// compactMap can reduce a non-empty collection to empty, so the semigroup variants return Result.
+// lazy.compactMap avoids intermediate allocation; .sumResult / .sum dispatch through the tiers above.
+
+public extension NonEmpty {
+    @inlinable
+    func compactMapAndSumResult<T: AdditiveSemigroup>(_ transform: (Element) -> T?) -> Result<T, EmptyCollectionError> {
+        lazy.compactMap(transform).sumResult
+    }
+
+    @inlinable
+    func compactMapAndSumResult<T: AdditiveSemigroupSummable>(_ transform: (Element) -> T?) -> Result<T, EmptyCollectionError> {
+        lazy.compactMap(transform).sumResult
+    }
+
+    @inlinable
+    func compactMapAndSum<T: AdditiveMonoid>(_ transform: (Element) -> T?) -> T {
+        lazy.compactMap(transform).sum
+    }
+}
+
+// MARK: - Sequence.compactMapAndSumResult / compactMapAndSum
+//
+// Same two-tier pattern as mapAndSumResult. lazy.compactMap filters nils without allocation.
+
+public extension Sequence {
+    @inlinable
+    func compactMapAndSumResult<T: AdditiveSemigroup>(_ transform: (Element) -> T?) -> Result<T, EmptyCollectionError> {
+        lazy.compactMap(transform).sumResult
+    }
+
+    @inlinable
+    func compactMapAndSumResult<T: AdditiveSemigroupSummable>(_ transform: (Element) -> T?) -> Result<T, EmptyCollectionError> {
+        lazy.compactMap(transform).sumResult
+    }
+
+    @inlinable
+    func compactMapAndSum<T: AdditiveMonoid>(_ transform: (Element) -> T?) -> T {
+        lazy.compactMap(transform).sum
+    }
+}
